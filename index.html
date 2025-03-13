@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Photography Prompt Generator</title>
+    <style>
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 5px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #generated-prompt { margin-top: 20px; padding: 15px; background: #f8f9fa; white-space: pre-wrap; }
+        .param-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Photography-Focused MidJourney Prompt Generator</h1>
+        <form id="prompt-form">
+            <!-- Subject Section -->
+            <div class="form-group">
+                <label for="subject">Main Subject *</label>
+                <input type="text" id="subject" required placeholder="e.g., woman, car, product">
+            </div>
+
+            <!-- Subject Details -->
+            <div class="form-group">
+                <label for="subject-details">Subject Details</label>
+                <input type="text" id="subject-details" placeholder="e.g., 25 year old model with platinum blonde bob haircut">
+            </div>
+
+            <!-- Detail Level -->
+            <div class="form-group">
+                <label for="detail-level">Detail Level</label>
+                <select id="detail-level">
+                    <option value="">Select Detail Level</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <!-- Environment -->
+            <div class="form-group">
+                <label for="environment">Environment/Setting</label>
+                <input type="text" id="environment" placeholder="e.g., Rainy City Street, Photo studio, Beach">
+            </div>
+
+            <!-- Art Style -->
+            <div class="form-group">
+                <label for="art-style">Art Style</label>
+                <select id="art-style">
+                    <option value="">Select Photography Style</option>
+                    <option>Instagram influencer post</option>
+                    <option>Fashion runway photo</option>
+                    <option>Cinematic still</option>
+                    <option>Documentary style</option>
+                    <option>Vintage film photography</option>
+                    <option>High fashion editorial</option>
+                    <option>Urban street photography</option>
+                    <option>Portrait studio photography</option>
+                    <option>Sports illustrated cover</option>
+                    <option>Architectural digest photo</option>
+                    <option>Professional product photography</option>
+                    <option>Glamour photography</option>
+                    <option>Surreal fashion editorial</option>
+                    <option>Vogue magazine editorial photo</option>
+                    <option>National Geographic photography</option>
+                </select>
+            </div>
+
+            <!-- Updated Lighting Dropdown -->
+            <div class="form-group">
+                <label for="lighting">Lighting</label>
+                <select id="lighting">
+                    <option value="">Select Lighting</option>
+                    <option>Studio lighting</option>
+                    <option>Natural daylight</option>
+                    <option>Golden hour</option>
+                    <option>Blue hour</option>
+                    <option>Dramatic lighting</option>
+                    <option>Soft lighting</option>
+                    <option>Neon lighting</option>
+                    <option>Backlit</option>
+                    <option>Rim lighting</option>
+                    <option>Volumetric lighting</option>
+                    <option>High-key lighting</option>
+                    <option>Low-key lighting</option>
+                    <option>Rembrandt lighting</option>
+                </select>
+            </div>
+
+            <!-- Camera Angle -->
+            <div class="form-group">
+                <label for="camera-angle">Camera Angle</label>
+                <select id="camera-angle">
+                    <option value="">Select Camera Angle</option>
+                    <option>Front view</option>
+                    <option>Side profile</option>
+                    <option>45-degree angle</option>
+                    <option>Three-quarter view</option>
+                    <option>High angle</option>
+                    <option>Low angle</option>
+                    <option>Close-up</option>
+                </select>
+            </div>
+
+            <!-- Parameters -->
+            <div class="form-group">
+                <label>Technical Parameters</label>
+                <div class="param-group">
+                    <select id="version">
+                        <option value="">Version</option>
+                        <option value="--v 5.2">v5.2</option>
+                        <option value="--v 6">v6</option>
+                        <option value="--v 6.1">v6.1</option>
+                    </select>
+
+                    <select id="aspect-ratio">
+                        <option value="">Aspect Ratio</option>
+                        <option value="--ar 1:1">1:1</option>
+                        <option value="--ar 4:5">4:5</option>
+                        <option value="--ar 3:2">3:2</option>
+                        <option value="--ar 16:9">16:9</option>
+                    </select>
+
+                    <select id="quality">
+                        <option value="">Quality</option>
+                        <option value="--q 1">Quality 1</option>
+                        <option value="--q 2">Quality 2</option>
+                        <option value="--q 5">Quality 5</option>
+                    </select>
+
+                    <select id="stylize">
+                        <option value="">Stylize</option>
+                        <option value="--stylize 100">100</option>
+                        <option value="--stylize 250">250</option>
+                        <option value="--stylize 500">500</option>
+                        <option value="--stylize 750">750</option>
+                        <option value="--stylize 1000">1000</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="button" onclick="generatePrompt()">Generate Prompt</button>
+        </form>
+
+        <div id="generated-prompt"></div>
+        <button onclick="copyPrompt()" style="margin-top: 10px;">Copy Prompt</button>
+    </div>
+
+    <script>
+        const detailPhrases = {
+            low: 'simple, minimal details, clean look',
+            medium: 'standard level of detail and complexity',
+            high: 'highly detailed, intricate details, complex'
+        };
+
+        function generatePrompt() {
+            // Collect components
+            const components = {
+                subject: document.getElementById('subject').value.trim(),
+                subjectDetails: document.getElementById('subject-details').value.trim(),
+                detailLevel: document.getElementById('detail-level').value,
+                environment: document.getElementById('environment').value.trim(),
+                artStyle: document.getElementById('art-style').value,
+                lighting: document.getElementById('lighting').value,
+                cameraAngle: document.getElementById('camera-angle').value
+            };
+
+            // Validate required field
+            if (!components.subject) {
+                alert('Please enter a main subject');
+                return;
+            }
+
+            // Build prompt parts
+            let promptParts = [components.subject];
+            if (components.subjectDetails) promptParts.push(components.subjectDetails);
+            if (components.environment) promptParts.push(`in ${components.environment}`);
+            if (components.artStyle) promptParts.push(components.artStyle);
+            if (components.detailLevel) promptParts.push(detailPhrases[components.detailLevel]);
+            if (components.lighting) promptParts.push(components.lighting);
+            if (components.cameraAngle) promptParts.push(components.cameraAngle);
+
+            // Collect parameters
+            const parameters = [
+                document.getElementById('version').value,
+                document.getElementById('aspect-ratio').value,
+                document.getElementById('quality').value,
+                document.getElementById('stylize').value
+            ].filter(p => p);
+
+            // Combine all parts
+            const fullPrompt = `${promptParts.join(', ')} ${parameters.join(' ')}`.trim();
+
+            // Display result
+            document.getElementById('generated-prompt').textContent = fullPrompt;
+        }
+
+        function copyPrompt() {
+            const prompt = document.getElementById('generated-prompt').textContent;
+            if (prompt) {
+                navigator.clipboard.writeText(prompt);
+                alert('Prompt copied to clipboard!');
+            }
+        }
+    </script>
+</body>
+</html>
